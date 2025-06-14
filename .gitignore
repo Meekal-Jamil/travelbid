@@ -1,0 +1,24 @@
+# Node dependencies (both backend and client)
+node_modules/
+client/node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# React build
+client/build
+
+# VSCode
+.vscode/
+
+# Coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
