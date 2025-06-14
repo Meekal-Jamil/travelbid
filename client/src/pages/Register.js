@@ -1,37 +1,91 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api'; // shared axios instance
+import { Form, Button, Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', role: 'traveler'
+    name: '',
+    email: '',
+    password: '',
+    role: 'traveler'
   });
 
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await axios.post('/api/auth/register', formData);
+      await api.post('/api/auth/register', formData);
       alert('Registration successful. You can now log in.');
+      navigate('/login');
     } catch (err) {
       alert('Registration failed!');
+      console.error(err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleRegister}>
-      <h2>Register</h2>
-      <input name="name" placeholder="Name" onChange={handleChange} required />
-      <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-      <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
-      <select name="role" onChange={handleChange}>
-        <option value="traveler">Traveler</option>
-        <option value="agent">Agent</option>
-      </select>
-      <button type="submit">Register</button>
-    </form>
+    <Container className="mt-5" style={{ maxWidth: '500px' }}>
+      <h2 className="mb-4 text-center">Register</h2>
+      <Form onSubmit={handleRegister}>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            name="name"
+            placeholder="Enter your name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Enter a password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Role</Form.Label>
+          <Form.Select name="role" value={formData.role} onChange={handleChange}>
+            <option value="traveler">Traveler</option>
+            <option value="agent">Agent</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Button variant="primary" type="submit" disabled={loading} className="w-100">
+          {loading ? 'Registering...' : 'Register'}
+        </Button>
+      </Form>
+    </Container>
   );
 };
 

@@ -3,7 +3,8 @@ const {
   registerUser,
   loginUser,
   getProfile,
-  updateProfile
+  updateProfile,
+  getAllUsers
 } = require('../controllers/authController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -17,5 +18,6 @@ router.post('/login', loginUser);
 // Protected routes
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
+router.get('/users', protect, getAllUsers); // ✅ New route for inbox dropdown
 
 module.exports = router;

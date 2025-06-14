@@ -1,22 +1,26 @@
+// ✅ Updated AgentDashboard.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Button, Card, Modal, Form } from 'react-bootstrap';
+import Spinner from '../components/Spinner';
+import api from '../services/api';
 
 const AgentDashboard = () => {
   const [trips, setTrips] = useState([]);
   const [selectedTripId, setSelectedTripId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ price: '', services: '' });
-  const token = localStorage.getItem('token');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const fetchTrips = async () => {
+    setLoading(true);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/trips`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/trips');
       setTrips(res.data);
     } catch (err) {
       console.error('Error fetching trips', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,19 +31,21 @@ const AgentDashboard = () => {
 
   const handleSubmitBid = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/bids`, {
+      await api.post('/api/bids', {
         trip: selectedTripId,
         price: form.price,
         services: form.services
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       alert('Bid submitted!');
       setShowModal(false);
+      setForm({ price: '', services: '' });
     } catch (err) {
       alert('Error submitting bid');
       console.error(err.response?.data || err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -49,24 +55,28 @@ const AgentDashboard = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Available Trip Requests</h2>
-      <div className="row">
-        {trips.map(trip => (
-          <div className="col-md-4" key={trip._id}>
-            <Card className="mb-3">
-              <Card.Body>
-                <Card.Title>{trip.destination}</Card.Title>
-                <Card.Text><b>Budget:</b> Rs. {trip.budget}</Card.Text>
-                <Card.Text><b>Dates:</b> {trip.startDate?.slice(0, 10)} - {trip.endDate?.slice(0, 10)}</Card.Text>
-                <Card.Text><b>Preferences:</b> {trip.preferences}</Card.Text>
-                <Button variant="primary" onClick={() => handleOpenBidModal(trip._id)}>
-                  Submit a Bid
-                </Button>
-              </Card.Body>
-            </Card>
-          </div>
-        ))}
-      </div>
+      <h2 className="text-center mb-4">Available Trip Requests</h2>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <div className="row">
+          {trips.map(trip => (
+            <div className="col-lg-4 col-md-6 mb-3" key={trip._id}>
+              <Card className="h-100 shadow-sm">
+                <Card.Body>
+                  <Card.Title>{trip.destination}</Card.Title>
+                  <Card.Text><strong>Budget:</strong> Rs. {trip.budget}</Card.Text>
+                  <Card.Text><strong>Dates:</strong> {trip.startDate?.slice(0, 10)} - {trip.endDate?.slice(0, 10)}</Card.Text>
+                  <Card.Text><strong>Preferences:</strong> {trip.preferences}</Card.Text>
+                  <Button variant="primary" onClick={() => handleOpenBidModal(trip._id)}>
+                    Submit a Bid
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Bid Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -89,7 +99,9 @@ const AgentDashboard = () => {
                 onChange={(e) => setForm({ ...form, services: e.target.value })}
               />
             </Form.Group>
-            <Button variant="success" type="submit">Submit</Button>
+            <Button variant="success" type="submit" disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit'}
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>
