@@ -1,73 +1,125 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Container, Alert } from 'react-bootstrap';
-import api from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import axios from '../utils/axios';
 
 const Profile = () => {
-  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [profile, setProfile] = useState({
+    name: '',
+    email: '',
+    role: ''
+  });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-
-  const fetchProfile = async () => {
-    try {
-      const res = await api.get('/api/auth/profile');
-      setFormData({ name: res.data.name, email: res.data.email });
-    } catch (err) {
-      setError('Failed to load profile.');
-      console.error('Profile fetch error:', err.response?.data || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateProfile = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccessMsg('');
-    try {
-      await api.put('/api/auth/profile', { name: formData.name });
-      setSuccessMsg('Profile updated!');
-    } catch (err) {
-      setError('Update failed.');
-      console.error('Profile update error:', err.response?.data || err.message);
-    }
-  };
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   useEffect(() => {
     fetchProfile();
   }, []);
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/auth/profile');
+      setProfile(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+      setError('Failed to fetch profile. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await axios.put('/api/auth/profile', profile);
+      setProfile(response.data);
+      setSuccess('Profile updated successfully!');
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError('Failed to update profile. Please try again later.');
+    }
+  };
+
+  const handleChange = (e) => {
+    setProfile({
+      ...profile,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  if (loading) {
+    return (
+      <Container className="py-4">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </Container>
+    );
+  }
 
   return (
-    <Container className="mt-4" style={{ maxWidth: '600px' }}>
+    <Container className="py-4">
       <h2 className="mb-4">Profile</h2>
 
-      {error && <Alert variant="danger">{error}</Alert>}
-      {successMsg && <Alert variant="success">{successMsg}</Alert>}
+      {error && (
+        <Alert variant="danger" className="mb-4">
+          {error}
+        </Alert>
+      )}
 
-      <Form onSubmit={updateProfile}>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-          />
-        </Form.Group>
+      {success && (
+        <Alert variant="success" className="mb-4">
+          {success}
+        </Alert>
+      )}
 
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            value={formData.email}
-            disabled
-          />
-        </Form.Group>
+      <Card>
+        <Card.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={profile.name}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Update Profile
-        </Button>
-      </Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={profile.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Role</Form.Label>
+              <Form.Control
+                type="text"
+                value={profile.role}
+                disabled
+              />
+            </Form.Group>
+
+            <Button type="submit" variant="primary">
+              Update Profile
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };

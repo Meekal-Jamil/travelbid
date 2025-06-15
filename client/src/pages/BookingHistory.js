@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Card, Container, Form } from 'react-bootstrap';
+import api from '../services/api';
 
 const BookingHistory = () => {
   const [bookings, setBookings] = useState([]);
-  const token = localStorage.getItem('token');
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/bids/bookings/traveler`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/bids/bookings/traveler');
       setBookings(res.data);
     } catch (err) {
       console.error('Error fetching bookings:', err);
@@ -19,9 +16,7 @@ const BookingHistory = () => {
 
   const handleRatingChange = async (bidId, rating) => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/bids/rate/${bidId}`, { rating }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/api/bids/rate/${bidId}`, { rating });
       alert('Rating submitted!');
       fetchBookings(); // Refresh to update the rating display
     } catch (err) {

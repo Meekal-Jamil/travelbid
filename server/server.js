@@ -2,6 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const tripRoutes = require('./routes/tripRoutes');
+const bidRoutes = require('./routes/bidRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const agentRoutes = require('./routes/agentRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -9,17 +15,28 @@ dotenv.config();
 // Initialize app
 const app = express();
 
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000', // React app URL
+  credentials: true
+}));
+
 // Middlewares
-app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/trips', require('./routes/tripRoutes'));
-app.use('/api/bids', require('./routes/bidRoutes'));
-app.use('/api/messages', require('./routes/messageRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/auth', authRoutes);
+app.use('/api/trips', tripRoutes);
+app.use('/api/bids', bidRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/agent', agentRoutes);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 // Connect to MongoDB and start server
 connectDB();

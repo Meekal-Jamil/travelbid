@@ -2,6 +2,7 @@ const express = require('express');
 const {
   registerUser,
   loginUser,
+  verifyToken,
   getProfile,
   updateProfile,
   getAllUsers
@@ -16,6 +17,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Protected routes
+router.get('/verify', protect, verifyToken);
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 router.get('/users', protect, getAllUsers); // ✅ New route for inbox dropdown

@@ -1,80 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import { Container, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaSignInAlt } from 'react-icons/fa';
+import axios from '../utils/axios';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({ setIsAuthenticated, setUserRole }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const [loading, setLoading] = useState(false);
-
-  const { user, role, dispatch } = useAuth();
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // 🔁 Redirect if already logged in
-  useEffect(() => {
-    if (user && role) {
-      if (role === 'traveler') navigate('/traveler');
-      else if (role === 'agent') navigate('/agent');
-      else if (role === 'admin') navigate('/admin');
-    }
-  }, [user, role, navigate]);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+
     try {
-      const res = await api.post('/api/auth/login', { email, password });
+      const response = await axios.post('/api/auth/login', formData);
+      const { token, role } = response.data;
 
-      dispatch({
-        type: 'LOGIN',
-        payload: { token: res.data.token, user: res.data.user },
-      });
+      // Store auth data
+      localStorage.setItem('token', token);
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('userId', response.data.userId);
 
-      const userRole = res.data.user.role;
-      if (userRole === 'traveler') navigate('/traveler');
-      else if (userRole === 'agent') navigate('/agent');
-      else if (userRole === 'admin') navigate('/admin');
-      else alert('Unknown role. Cannot redirect.');
+      // Update auth state
+      setIsAuthenticated(true);
+      setUserRole(role);
+
+      // Redirect based on role
+      navigate('/');
     } catch (err) {
-      alert('Login failed!');
-      console.error('Login error:', err.response?.data || err.message);
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || 'Failed to login. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container className="mt-5" style={{ maxWidth: '400px' }}>
-      <h2 className="mb-4 text-center">Login</h2>
-      <Form onSubmit={handleLogin}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            placeholder="Enter your email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+    <Container className="py-5">
+      <Row className="justify-content-center">
+        <Col md={6} lg={5}>
+          <Card className="shadow">
+            <Card.Body className="p-5">
+              <div className="text-center mb-4">
+                <FaSignInAlt size={48} className="text-primary mb-3" />
+                <h2>Welcome Back</h2>
+                <p className="text-muted">Please login to your account</p>
+              </div>
 
-        <Form.Group className="mb-4">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            placeholder="Enter your password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+              {error && (
+                <Alert variant="danger" className="mb-4">
+                  {error}
+                </Alert>
+              )}
 
-        <Button type="submit" variant="primary" className="w-100" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-      </Form>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-4">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    required
+                  />
+                </Form.Group>
+
+                <div className="d-grid gap-2">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={loading}
+                    className="mb-3"
+                  >
+                    {loading ? 'Logging in...' : 'Login'}
+                  </Button>
+                </div>
+
+                <div className="text-center">
+                  <p className="mb-0">
+                    Don't have an account?{' '}
+                    <Link to="/register" className="text-primary">
+                      Register here
+                    </Link>
+                  </p>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -1,11 +1,31 @@
 const mongoose = require('mongoose');
+
 const tripSchema = new mongoose.Schema({
-  traveler: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  destination: String,
-  startDate: Date,
-  endDate: Date,
-  budget: Number,
-  preferences: String,
+  title: { type: String, required: true },
+  traveler: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  destination: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  budget: { type: Number, required: true },
+  preferences: { type: String, required: true },
+  description: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['open', 'booked', 'in_progress', 'completed', 'cancelled'],
+    default: 'open'
+  },
+  bids: [{
+    agent: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    price: { type: Number, required: true },
+    services: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending'
+    },
+    createdAt: { type: Date, default: Date.now }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
+
 module.exports = mongoose.model('Trip', tripSchema);

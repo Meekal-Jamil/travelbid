@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const BidForm = ({ tripId }) => {
   const [price, setPrice] = useState('');
   const [services, setServices] = useState('');
-  const token = localStorage.getItem('token');
 
   const handleBidSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/bids', { trip: tripId, price, services }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/api/bids', { trip: tripId, price, services });
       alert('Bid submitted!');
     } catch (err) {
       alert('Failed to submit bid.');
