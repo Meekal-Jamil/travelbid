@@ -3,6 +3,7 @@ import { Navbar, Nav, Button } from 'react-bootstrap';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { FaUser, FaSignOutAlt, FaChartBar, FaInbox, FaPlusCircle  } from 'react-icons/fa';
 import '../styles/navbar.css';
+import logo from '../images/logo.png';
 
 const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
   const navigate = useNavigate();
@@ -14,7 +15,14 @@ const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
 
   return (
     <Navbar expand="lg" className="flex-column custom-vertical-navbar shadow">
-      <Navbar.Brand as={Link} to="/" className="text-center py-3 w-100">TravelBid</Navbar.Brand>
+      <Navbar.Brand as={Link} to="/" className="text-center py-3 w-100 d-flex align-items-center justify-content-center">
+        <img
+          src={logo}
+          alt="TravelBid Logo"
+          style={{ height: '40px', marginRight: '10px' }}
+        />
+        TravelBid
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls="navbar-collapse" className="mb-2 align-self-end me-" />
       <Navbar.Collapse id="navbar-collapse" className="w-100 nav-inner-navlinks">
         <Nav className="flex-column w-100">

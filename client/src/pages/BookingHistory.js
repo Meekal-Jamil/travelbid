@@ -95,7 +95,7 @@ const BookingHistory = () => {
                   </p>
                 </div>
                 <Badge bg={bid.paymentStatus === 'paid' ? 'success' : 'warning'}>
-                  {bid.paymentStatus === 'paid' ? 'Paid' : 'Pending Payment'}
+                  {bid.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
                 </Badge>
               </div>
 

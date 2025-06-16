@@ -18,7 +18,13 @@ const AgentDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState({
+    destination: '',
+    startDate: '',
+    endDate: '',
+    minBudget: '',
+    maxBudget: ''
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,8 +57,8 @@ const AgentDashboard = () => {
     }
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const handleSearch = (filters) => {
+    setSearchQuery(filters);
   };
 
   const handleViewDetails = (trip) => {
@@ -63,10 +69,25 @@ const AgentDashboard = () => {
     navigate(`/trip/${trip._id}`);
   };
 
-  const filteredTrips = trips.filter(trip =>
-    trip.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    trip.destination?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTrips = trips.filter(trip => {
+    const matchesDestination = !searchQuery.destination || 
+      trip.destination?.toLowerCase().includes(searchQuery.destination.toLowerCase());
+    
+    const matchesStartDate = !searchQuery.startDate || 
+      new Date(trip.startDate) >= new Date(searchQuery.startDate);
+    
+    const matchesEndDate = !searchQuery.endDate || 
+      new Date(trip.endDate) <= new Date(searchQuery.endDate);
+    
+    const matchesMinBudget = !searchQuery.minBudget || 
+      trip.budget >= Number(searchQuery.minBudget);
+    
+    const matchesMaxBudget = !searchQuery.maxBudget || 
+      trip.budget <= Number(searchQuery.maxBudget);
+
+    return matchesDestination && matchesStartDate && matchesEndDate && 
+           matchesMinBudget && matchesMaxBudget;
+  });
 
   const StatCard = ({ title, value, icon: Icon, color }) => (
     <Card className="h-100">
@@ -161,7 +182,7 @@ const AgentDashboard = () => {
             </Row>
           ) : (
             <Alert variant="info">
-              {searchQuery
+              {searchQuery.destination || searchQuery.startDate || searchQuery.endDate || searchQuery.minBudget || searchQuery.maxBudget
                 ? 'No trips match your search criteria'
                 : 'No trips available at the moment'}
             </Alert>
