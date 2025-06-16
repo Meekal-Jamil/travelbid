@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  padding-left: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -11,3 +12,78 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* custom css */
+
+/* login page */
+body {
+  background-color: #FBF8EF !important;
+}
+
+.login-card {
+  /* background-color: #FBF8EF; */
+  /* width: 35%; */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+.shadow {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);  
+}
+
+.login-card .login-btn {
+  background-color: #80CBC4;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+.login-card .login-btn:hover {
+  transform: scale(1.01);
+  background-color: #80CBC4;
+  border-radius: 8px;
+  /* border: #80CBC4; */
+  /* color: black; */
+}
+
+
+.form-label {
+  font-weight: 700;
+  /* background-color: #FBF8EF; */
+  /* color: #FFB433; */
+}
+
+
+
+
+/* navbar */
+.custom-navbar {
+  background-color: #80CBC4 !important;
+}
+
+/* icons colors */
+.font-icons {
+  color: #80CBC4;
+}
+
+
+
+
+
+
+/* register button */
+.register-card .register-btn {
+  background-color: #80CBC4;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+.register-card .register-btn:hover {
+  transform: scale(1.01);
+  background-color: #80CBC4;
+  border-radius: 8px;
+  /* border: #80CBC4; */
+  /* color: black; */
+}
+

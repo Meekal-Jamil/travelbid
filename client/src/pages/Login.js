@@ -49,13 +49,13 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
   };
 
   return (
-    <Container className="py-5">
+    <Container >
       <Row className="justify-content-center">
         <Col md={6} lg={5}>
-          <Card className="shadow">
+          <Card className="shadow login-card">
             <Card.Body className="p-5">
               <div className="text-center mb-4">
-                <FaSignInAlt size={48} className="text-primary mb-3" />
+                <FaSignInAlt size={48} className="font-icons mb-3" />
                 <h2>Welcome Back</h2>
                 <p className="text-muted">Please login to your account</p>
               </div>
@@ -70,11 +70,12 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
                 <Form.Group className="mb-3">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
+                    className="ms-2"
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter your email"
+                    placeholder="✉  Enter your email"
                     required
                   />
                 </Form.Group>
@@ -82,25 +83,27 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
                 <Form.Group className="mb-4">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
+                    className="ms-2"
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter your password"
+                    placeholder="ꗃ  Enter your password"
                     required
                   />
                 </Form.Group>
 
                 <div className="d-grid gap-2">
                   <Button
-                    variant="primary"
+                    className="mb-3 login-btn btn-lg"
                     type="submit"
                     disabled={loading}
-                    className="mb-3"
                   >
                     {loading ? 'Logging in...' : 'Login'}
                   </Button>
                 </div>
+
+                <hr className="my-4"/>
 
                 <div className="text-center">
                   <p className="mb-0">

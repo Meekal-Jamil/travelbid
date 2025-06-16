@@ -1,0 +1,107 @@
+/* NavigationBar.css or App.css */
+@import './variables.css';
+
+.custom-vertical-navbar {
+  /* Set a fixed width for your sidebar */
+  /* width: 200px;  */
+  background-color: var(--color-background-light); /* Light gray background */
+  /* Make it sticky or fixed if you want it always visible */
+  height: 100vh; /* Full viewport height */
+  padding: 1rem; /* Adjust padding as needed */
+  overflow-y: auto; /* Enable scrolling if content exceeds height */
+  
+}
+
+.custom-vertical-navbar .navbar-brand {
+  margin-bottom: 1rem; /* Space below brand */
+}
+
+
+
+.custom-vertical-navbar .nav-link {
+  padding: 0.75rem 5rem; /* Adjust padding for links */
+  text-align: left; /* Align text to the left */
+  color: var(--color-text-dark);
+  background: #dfdfdf;
+  border-radius: 16px;
+  margin: 0.2rem 1rem;
+  transition: background 0.2s, color 0.2s;
+  /* Add hover effects if desired */
+}
+
+/* Hover effect for nav links */
+.custom-vertical-navbar .nav-link:hover {
+  background-color: #e0e0e0;
+  color: var(--color-primary-orange);
+}
+
+/* Active nav link styling */
+.custom-vertical-navbar .nav-link.active {
+  background-color: var(--color-primary-teal);
+  color: var(--color-text-light) !important;
+  font-weight: 600;
+}
+
+/* Custom style for the logout button in the navbar */
+.custom-vertical-navbar .btn-logout {
+  background: white;
+  color: #222;
+  border: none;
+  font-weight: 600;
+  border-radius: 6px;
+  width: 80%;
+  margin: 0.5rem auto 0 auto;
+  /* display: block; */
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.custom-vertical-navbar .btn-logout:hover, .custom-vertical-navbar .btn-logout:focus {
+  background: white;
+  color: #222;
+  transform: scaleX(1.05);
+}
+
+/* To push content next to the sidebar, you'll need to add padding to your main content area */
+/* body {
+  padding-left: 250px; 
+} */
+
+/* Media query for smaller screens if you want to change behavior */
+@media (max-width: 991.98px) { /* Bootstrap's 'lg' breakpoint */
+  .custom-vertical-navbar {
+    /* Maybe make it full width and toggleable, or hide it by default */
+    width: 100%;
+    height: auto;
+    position: static; /* Or use an off-canvas pattern */
+    padding-left: 0;
+    flex-direction: row !important;
+  }
+  body {
+    padding-left: 0;
+  }
+  .custom-vertical-navbar .navbar-collapse {
+    flex-direction: column;
+  }
+}
+
+/* Sidebar layout for large screens */
+@media (min-width: 992px) {
+  .custom-vertical-navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 200px;
+    height: 100vh;
+    flex-direction: column !important;
+    border-radius: 0;
+    z-index: 1040;
+  }
+  body {
+    padding-left: 200px;
+  }
+  .custom-vertical-navbar .navbar-collapse {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-start;
+  }
+}

@@ -12,6 +12,7 @@ import TripForm from './pages/TripForm';
 import Profile from './pages/Profile';
 import Inbox from './pages/Inbox';
 import axios from './utils/axios';
+import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -65,13 +66,15 @@ function App() {
 
   return (
     <Router>
-      <div className="d-flex flex-column min-vh-100">
-        <NavigationBar 
+      <div className="d-flex flex-column flex-md-row min-vh-100">
+        
+        <NavigationBar
           isAuthenticated={isAuthenticated} 
           userRole={userRole} 
           onLogout={handleLogout} 
         />
-        <main className="flex-grow-1 py-4">
+
+        <main className="main-content flex-grow-1 py-4 vh-100" style={{ overflowY: "auto" }}>
           <Routes>
             {/* Public Routes */}
             <Route 

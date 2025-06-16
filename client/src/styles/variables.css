@@ -1,0 +1,14 @@
+:root {
+    /* Brand/Primary Colors */
+    --color-primary-teal: #80CBC4;
+    --color-light-teal: #B4EBE6;
+    --color-primary-orange: #FFB433;
+  
+    /* Backgrounds & Surfaces */
+    --color-background-light: #FBF8EF;
+  
+    /* Text Colors (common ones, adjust as needed) */
+    --color-text-dark: #343a40; /* Example: a dark gray for primary text */
+    --color-text-light: white;   /* For text on dark backgrounds */
+    --color-text-muted: #6c757d;  /* Example: Bootstrap's default muted text */
+  }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { Navbar, Nav, Button } from 'react-bootstrap';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
+import { FaUser, FaSignOutAlt, FaChartBar, FaInbox, FaPlusCircle  } from 'react-icons/fa';
+import '../styles/navbar.css';
 
 const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
   const navigate = useNavigate();
@@ -12,47 +13,52 @@ const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
-      <Container>
-        <Navbar.Brand as={Link} to="/">TravelBid</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {isAuthenticated && (
-              <>
-                <Nav.Link as={Link} to="/">Dashboard</Nav.Link>
-                <Nav.Link as={Link} to="/inbox">Inbox</Nav.Link>
-                {userRole === 'traveler' && (
-                  <Nav.Link as={Link} to="/post-trip">Post Trip</Nav.Link>
-                )}
-              </>
-            )}
-          </Nav>
-          <Nav>
-            {isAuthenticated ? (
-              <>
-                <Nav.Link as={Link} to="/profile">
-                  <FaUser className="me-1" />
-                  Profile
+    <Navbar expand="lg" className="flex-column custom-vertical-navbar shadow">
+      <Navbar.Brand as={Link} to="/" className="text-center py-3 w-100">TravelBid</Navbar.Brand>
+      <Navbar.Toggle aria-controls="navbar-collapse" className="mb-2 align-self-end me-" />
+      <Navbar.Collapse id="navbar-collapse" className="w-100 nav-inner-navlinks">
+        <Nav className="flex-column w-100">
+          {isAuthenticated && (
+            <>
+              <Nav.Link as={NavLink} to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
+                <FaChartBar style={{ marginRight: '0.5rem' }} /> Dashboard
+              </Nav.Link>
+
+              <Nav.Link as={NavLink} to="/inbox" className={({ isActive }) => (isActive ? 'active' : '')}>
+                <FaInbox style={{ marginRight: '0.5rem' }} /> Inbox
+              </Nav.Link>
+
+              {userRole === 'traveler' && (
+                <Nav.Link as={NavLink} to="/post-trip" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  <FaPlusCircle style={{ marginRight: '0.5rem' }} /> Post Trip
                 </Nav.Link>
-                <Button 
-                  variant="outline-light" 
-                  className="ms-2"
-                  onClick={handleLogout}
-                >
-                  <FaSignOutAlt className="me-1" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                <Nav.Link as={Link} to="/register">Register</Nav.Link>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
+              )}
+            </>
+          )}
+        </Nav>
+        <Nav className="flex-column w-100 mt-auto pb-3">
+          {isAuthenticated ? (
+            <>
+              <Nav.Link as={NavLink} to="/profile" className={({ isActive }) => isActive ? 'active' : ''}>
+                <FaUser style={{ marginRight: '0.5rem' }} />
+                Profile
+              </Nav.Link>
+              <Button 
+                className="btn-logout mx-3 mt-2 shadow" // Custom logout button style
+                onClick={handleLogout}
+              >
+                <FaSignOutAlt className="text-dark me-1" />
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Nav.Link as={NavLink} to="/login" className={({ isActive }) => isActive ? 'active' : ''}>Login</Nav.Link>
+              <Nav.Link as={NavLink} to="/register" className={({ isActive }) => isActive ? 'active' : ''}>Register</Nav.Link>
+            </>
+          )}
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   );
 };

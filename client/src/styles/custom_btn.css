@@ -1,0 +1,55 @@
+/* Your existing button styles */
+@import './variables.css';
+
+button.post-trip-btn, button.view-history-btn, button.view-messages-btn {
+    background-color: var(--color-primary-orange);
+    color: white;
+    font-weight: 600;
+    border: none;
+    width: 90%;
+    transition: all 0.1s ease-in-out; 
+  }
+  
+  button.post-trip-btn:hover, button.view-history-btn:hover, button.view-messages-btn:hover {
+    transform: scale(1.01);
+    background-color: var(--color-primary-orange); /* Keep background for solid on hover */
+    border-radius: 8px;
+  }
+  
+  /* --- New Styles for Outlined Buttons --- */
+  button.view-history-btn, button.view-messages-btn {
+    background-color: transparent; /* Make background transparent */
+    color: var(--color-primary-orange); /* Set text color to your brand color */
+    border: 2px solid var(--color-primary-orange); /* Add a border with your brand color */
+  }
+  
+  /* Hover styles for outlined buttons */
+  button.view-history-btn:hover, button.view-messages-btn:hover {
+    background-color: var(--color-primary-orange); /* Fill background on hover */
+    color: white; /* Change text color to white on hover */
+    border-color: var(--color-primary-orange); /* Keep border color */
+  }
+
+  /* Override Bootstrap's focus and active states */
+  button.post-trip-btn:focus,
+  button.view-history-btn:focus,
+  button.view-messages-btn:focus,
+  button.post-trip-btn:active,
+  button.view-history-btn:active,
+  button.view-messages-btn:active {
+    background-color: var(--color-primary-orange) !important;
+    color: white !important;
+    border-color: var(--color-primary-orange) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  /* Specific focus styles for outlined buttons */
+  button.view-history-btn:focus,
+  button.view-messages-btn:focus,
+  button.view-history-btn:active,
+  button.view-messages-btn:active {
+    background-color: var(--color-primary-orange) !important;
+    color: white !important;
+    border-color: var(--color-primary-orange) !important;
+  }

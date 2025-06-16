@@ -64,13 +64,13 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
   };
 
   return (
-    <Container className="py-5">
+    <Container>
       <Row className="justify-content-center">
         <Col md={6} lg={5}>
-          <Card className="shadow">
+          <Card className="shadow register-card">
             <Card.Body className="p-5">
               <div className="text-center mb-4">
-                <FaUserPlus size={48} className="text-primary mb-3" />
+                <FaUserPlus size={48} className="font-icons mb-3" />
                 <h2>Create Account</h2>
                 <p className="text-muted">Join our travel community</p>
               </div>
@@ -89,7 +89,7 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Enter your full name"
+                    placeholder="ඞ  Enter your full name"
                     required
                   />
                 </Form.Group>
@@ -101,7 +101,7 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter your email"
+                    placeholder="✉  Enter your email"
                     required
                   />
                 </Form.Group>
@@ -113,7 +113,7 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Create a password"
+                    placeholder="ꗃ  Create a password"
                     required
                   />
                 </Form.Group>
@@ -125,7 +125,7 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Confirm your password"
+                    placeholder="ꗃ  Confirm your password"
                     required
                   />
                 </Form.Group>
@@ -144,14 +144,16 @@ const Register = ({ setIsAuthenticated, setUserRole }) => {
 
                 <div className="d-grid gap-2">
                   <Button
-                    variant="primary"
+                    className="mb-3 register-btn btn-lg"
+                    // variant="primary"
                     type="submit"
                     disabled={loading}
-                    className="mb-3"
                   >
                     {loading ? 'Creating Account...' : 'Create Account'}
                   </Button>
                 </div>
+
+                <hr className="my-4"/>
 
                 <div className="text-center">
                   <p className="mb-0">

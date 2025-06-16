@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import TripCard from '../components/TripCard';
 import SearchBar from '../components/SearchBar';
 import axios from '../utils/axios';
+import '../styles/custom_btn.css';
 
 const TravelerDashboard = () => {
   const [trips, setTrips] = useState([]);
@@ -74,10 +75,10 @@ const TravelerDashboard = () => {
         <Col md={4}>
           <Card className="h-100">
             <Card.Body className="text-center">
-              <FaPlus size={32} className="text-primary mb-3" />
+              <FaPlus size={28} className="font-icons mb-3" />
               <h5>Post New Trip</h5>
               <p className="text-muted">Create a new trip request</p>
-              <Button variant="primary" onClick={handleCreateTrip}>
+              <Button className="post-trip-btn" onClick={handleCreateTrip}>
                 Create Trip
               </Button>
             </Card.Body>
@@ -86,10 +87,10 @@ const TravelerDashboard = () => {
         <Col md={4}>
           <Card className="h-100">
             <Card.Body className="text-center">
-              <FaHistory size={32} className="text-primary mb-3" />
+              <FaHistory size={28} className="font-icons mb-3" />
               <h5>Trip History</h5>
               <p className="text-muted">View your past trips</p>
-              <Button variant="outline-primary" onClick={() => navigate('/trips/history')}>
+              <Button className="view-history-btn" onClick={() => navigate('/trips/history')}>
                 View History
               </Button>
             </Card.Body>
@@ -98,10 +99,10 @@ const TravelerDashboard = () => {
         <Col md={4}>
           <Card className="h-100">
             <Card.Body className="text-center">
-              <FaInbox size={32} className="text-primary mb-3" />
+              <FaInbox size={28} className="font-icons mb-3" />
               <h5>Messages</h5>
               <p className="text-muted">Check your messages</p>
-              <Button variant="outline-primary" onClick={() => navigate('/inbox')}>
+              <Button className="view-messages-btn" onClick={() => navigate('/inbox')}>
                 View Messages
               </Button>
             </Card.Body>
