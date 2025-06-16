@@ -1,0 +1,23 @@
+
+
+.msg-sent .card {
+  background-color: #e1ffc7 !important;
+  border-radius: 15px 15px 0 15px;
+  border: none;
+}
+
+
+.msg-received .card {
+  background-color: #FBF8EF !important;
+  border-radius: 15px 15px 15px 0;
+  border: none;
+}
+
+.msg-sent .text-muted {
+  font-size: 12px;
+}
+
+.msg-received .text-muted {
+  font-size: 12px;
+}
+

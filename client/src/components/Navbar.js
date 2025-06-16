@@ -15,7 +15,12 @@ const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
 
   return (
     <Navbar expand="lg" className="flex-column custom-vertical-navbar shadow">
-      <Navbar.Brand as={Link} to="/" className="text-center py-3 w-100 d-flex align-items-center justify-content-center">
+      <Navbar.Brand 
+        as={Link} 
+        to="/" 
+        className="text-center py-0 my-2 w-100 d-flex align-items-center justify-content-center"
+        style={{ marginBottom: '0px', fontWeight: '600' }}
+      >
         <img
           src={logo}
           alt="TravelBid Logo"
@@ -28,6 +33,7 @@ const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
         <Nav className="flex-column w-100">
           {isAuthenticated && (
             <>
+              <hr className="mt-0 mb-2 mx-3" />
               <Nav.Link as={NavLink} to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
                 <FaChartBar style={{ marginRight: '0.5rem' }} /> Dashboard
               </Nav.Link>
@@ -47,6 +53,7 @@ const NavigationBar = ({ isAuthenticated, userRole, onLogout }) => {
         <Nav className="flex-column w-100 mt-auto pb-3">
           {isAuthenticated ? (
             <>
+              <hr className="mx-3" />
               <Nav.Link as={NavLink} to="/profile" className={({ isActive }) => isActive ? 'active' : ''}>
                 <FaUser style={{ marginRight: '0.5rem' }} />
                 Profile

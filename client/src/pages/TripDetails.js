@@ -143,7 +143,7 @@ const TripDetails = () => {
                 </p>
                 <p className="mb-0">
                   <FaDollarSign className="me-2 text-primary" />
-                  Budget: ${trip.budget}
+                  Budget: PKR {trip.budget}
                 </p>
               </div>
 
@@ -170,7 +170,7 @@ const TripDetails = () => {
                 {trip.bids.map((bid) => (
                   <div key={bid._id} className="mb-3 p-3 border rounded">
                     <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h6 className="mb-0">${bid.price}</h6>
+                      <h6 className="mb-0">PKR {bid.price}</h6>
                       <Badge bg={bid.status === 'pending' ? 'warning' : bid.status === 'accepted' ? 'success' : 'danger'}>
                         {bid.status}
                       </Badge>
@@ -210,7 +210,7 @@ const TripDetails = () => {
         <Form onSubmit={handleBidSubmit}>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <Form.Label>Price ($)</Form.Label>
+              <Form.Label>Price (PKR)</Form.Label>
               <Form.Control
                 type="number"
                 value={bidForm.price}

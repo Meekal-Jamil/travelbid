@@ -1,0 +1,21 @@
+  
+  /* register button */
+  .register-card .register-btn {
+    background-color: #80CBC4;
+    color: white;
+    font-weight: 600;
+    border: none;
+  }
+  
+  .register-card .register-btn:hover {
+    transform: scale(1.01);
+    background-color: #80CBC4;
+    border-radius: 8px;
+    /* border: #80CBC4; */
+    /* color: black; */
+  }
+  
+  .register-card .register-btn:focus {
+    background: #80CBC4;
+    color: white;
+  }

@@ -105,7 +105,7 @@ const TripForm = () => {
                 </Row>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Budget (USD)</Form.Label>
+                  <Form.Label>Budget PKR</Form.Label>
                   <Form.Control
                     type="number"
                     name="budget"

@@ -38,8 +38,8 @@ const TravelerDashboard = () => {
     }
   };
 
-  const handleSearch = (filters) => {
-    setSearchQuery(filters);
+  const handleSearch = (query) => {
+    setSearchQuery(query);
   };
 
   const handleViewDetails = (trip) => {
@@ -53,16 +53,12 @@ const TravelerDashboard = () => {
   const filteredTrips = trips.filter(trip => {
     const matchesDestination = !searchQuery.destination || 
       trip.destination?.toLowerCase().includes(searchQuery.destination.toLowerCase());
-    
     const matchesStartDate = !searchQuery.startDate || 
       new Date(trip.startDate) >= new Date(searchQuery.startDate);
-    
     const matchesEndDate = !searchQuery.endDate || 
       new Date(trip.endDate) <= new Date(searchQuery.endDate);
-    
     const matchesMinBudget = !searchQuery.minBudget || 
       trip.budget >= Number(searchQuery.minBudget);
-    
     const matchesMaxBudget = !searchQuery.maxBudget || 
       trip.budget <= Number(searchQuery.maxBudget);
 
@@ -83,7 +79,7 @@ const TravelerDashboard = () => {
   }
 
   return (
-    <Container className="py-4">
+    <Container >
       <h2 className="mb-4">Traveler Dashboard</h2>
 
       {error && (
@@ -92,13 +88,14 @@ const TravelerDashboard = () => {
         </Alert>
       )}
 
-      <Row className="g-4 mb-4">
+<Row className="g-3 mb-4 mx-3">
         <Col md={4}>
           <Card className="h-100">
             <Card.Body className="text-center">
               <FaPlus size={28} className="font-icons mb-3" />
               <h5>Post New Trip</h5>
               <p className="text-muted">Create a new trip request</p>
+              <hr className="mx-3"/>
               <Button className="post-trip-btn" onClick={handleCreateTrip}>
                 Create Trip
               </Button>
@@ -111,6 +108,7 @@ const TravelerDashboard = () => {
               <FaHistory size={28} className="font-icons mb-3" />
               <h5>Trip History</h5>
               <p className="text-muted">View your past trips</p>
+              <hr className="mx-3"/>
               <Button className="view-history-btn" onClick={() => navigate('/trips/history')}>
                 View History
               </Button>
@@ -123,6 +121,7 @@ const TravelerDashboard = () => {
               <FaInbox size={28} className="font-icons mb-3" />
               <h5>Messages</h5>
               <p className="text-muted">Check your messages</p>
+              <hr className="mx-3"/>
               <Button className="view-messages-btn" onClick={() => navigate('/inbox')}>
                 View Messages
               </Button>
@@ -152,7 +151,7 @@ const TravelerDashboard = () => {
             </Row>
           ) : (
             <Alert variant="info">
-              {searchQuery.destination || searchQuery.startDate || searchQuery.endDate || searchQuery.minBudget || searchQuery.maxBudget
+              {searchQuery
                 ? 'No trips match your search criteria'
                 : 'You haven\'t posted any trips yet'}
             </Alert>

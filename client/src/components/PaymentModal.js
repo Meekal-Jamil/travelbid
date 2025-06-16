@@ -97,7 +97,7 @@ const PaymentForm = ({ bidId, tripId, amount, onSuccess, onClose }) => {
             disabled={!stripe || processing}
             variant="primary"
           >
-            {processing ? 'Processing...' : `Pay $${amount}`}
+            {processing ? 'Processing...' : `Pay PKR ${amount}`}
           </Button>
         </div>
       </form>

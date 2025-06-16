@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, ListGroup, Form, Button, Alert } from 'react-bootstrap';
 import axios from '../utils/axios';
+import '../styles/inbox.css';
 
 const Inbox = () => {
   const [chatUsers, setChatUsers] = useState([]);
@@ -20,6 +21,7 @@ const Inbox = () => {
       return;
     }
     setCurrentUserId(userId);
+    // console.log(currentUserId);
   }, []);
 
   useEffect(() => {
@@ -130,7 +132,7 @@ const Inbox = () => {
   }
 
   return (
-    <Container className="py-4">
+    <Container >
       <h2 className="mb-4">Inbox</h2>
 
       <Row>
@@ -182,8 +184,9 @@ const Inbox = () => {
                 <div style={{ maxHeight: '60vh', overflowY: 'auto', marginBottom: '1rem' }}>
                   {messages.map((msg) => {
                     const isMe = msg.sender._id === currentUserId;
+                    console.log(currentUserId);
                     return (
-                      <div key={msg._id} className={`d-flex ${isMe ? 'justify-content-end' : 'justify-content-start'}`}>
+                      <div key={msg._id} className={`d-flex ${isMe ? 'justify-content-end msg-sent' : 'justify-content-start msg-received'}`}>
                         <Card
                           className={`mb-2 ${isMe ? 'bg-light text-dark' : 'bg-white border'}`}
                           style={{ maxWidth: '75%' }}

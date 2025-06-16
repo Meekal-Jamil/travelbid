@@ -30,6 +30,9 @@ const AgentDashboard = () => {
   useEffect(() => {
     fetchTrips();
     fetchStats();
+    // Set up polling for real-time updates
+    const interval = setInterval(fetchStats, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval);
   }, []);
 
   const fetchTrips = async () => {
@@ -49,7 +52,6 @@ const AgentDashboard = () => {
   const fetchStats = async () => {
     try {
       const response = await axios.get('/api/agent/stats');
-      console.log('Fetched stats:', response.data); // Debug log
       setStats(response.data);
     } catch (err) {
       console.error('Error fetching stats:', err);
@@ -145,7 +147,7 @@ const AgentDashboard = () => {
         <Col md={3}>
           <StatCard
             title="Earnings"
-            value={`$${stats.earnings.toFixed(2)}`}
+            value={`PKR ${stats.earnings.toFixed(2)}`}
             icon={FaChartLine}
             color="info"
           />

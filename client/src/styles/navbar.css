@@ -9,23 +9,27 @@
   height: 100vh; /* Full viewport height */
   padding: 1rem; /* Adjust padding as needed */
   overflow-y: auto; /* Enable scrolling if content exceeds height */
-  
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%; /* Ensure navbar takes full width of its container */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1030;
 }
 
 .custom-vertical-navbar .navbar-brand {
   margin-bottom: 1rem; /* Space below brand */
 }
 
-
-
 .custom-vertical-navbar .nav-link {
-  padding: 0.75rem 5rem; /* Adjust padding for links */
+  padding: 0.75rem 1rem !important; 
   text-align: left; /* Align text to the left */
   color: var(--color-text-dark);
   background: #dfdfdf;
   border-radius: 16px;
-  margin: 0.2rem 1rem;
+  margin: 0.2rem 0.5rem; /* Reduced margin from 1rem to 0.5rem */
   transition: background 0.2s, color 0.2s;
+  white-space: nowrap; /* Prevent text wrapping */
   /* Add hover effects if desired */
 }
 
@@ -57,7 +61,7 @@
 .custom-vertical-navbar .btn-logout:hover, .custom-vertical-navbar .btn-logout:focus {
   background: white;
   color: #222;
-  transform: scaleX(1.05);
+  transform: scaleX(1.01);
 }
 
 /* To push content next to the sidebar, you'll need to add padding to your main content area */
@@ -66,25 +70,34 @@
 } */
 
 /* Media query for smaller screens if you want to change behavior */
-@media (max-width: 991.98px) { /* Bootstrap's 'lg' breakpoint */
+@media (max-width: 990px) { 
   .custom-vertical-navbar {
     /* Maybe make it full width and toggleable, or hide it by default */
     width: 100%;
     height: auto;
-    position: static; /* Or use an off-canvas pattern */
-    padding-left: 0;
+    position: relative; /* Change to relative for mobile */
+    padding: 0.5rem;
     flex-direction: row !important;
+    overflow-x: hidden;
   }
   body {
     padding-left: 0;
   }
+  .main-content {
+    margin-left: 0 !important; /* Remove margin on mobile */
+    width: 100% !important; /* Full width on mobile */
+  }
   .custom-vertical-navbar .navbar-collapse {
     flex-direction: column;
+  }
+  .custom-vertical-navbar .nav-link {
+    padding: 0.5rem 1rem; /* Further reduced padding for mobile */
+    margin: 0.2rem 0.3rem; /* Further reduced margin for mobile */
   }
 }
 
 /* Sidebar layout for large screens */
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .custom-vertical-navbar {
     position: fixed;
     left: 0;
@@ -94,6 +107,7 @@
     flex-direction: column !important;
     border-radius: 0;
     z-index: 1040;
+    overflow-x: hidden;
   }
   body {
     padding-left: 200px;

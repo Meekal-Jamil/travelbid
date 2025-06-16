@@ -20,11 +20,6 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Validate email format
-    if (!email.endsWith('@travelbid.com')) {
-      return res.status(400).json({ message: 'Email must end with @travelbid.com' });
-    }
-
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -50,9 +45,6 @@ const registerUser = async (req, res) => {
     }
   } catch (error) {
     console.error('Register error:', error);
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ message: error.message });
-    }
     res.status(500).json({ message: 'Server error' });
   }
 };

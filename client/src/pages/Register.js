@@ -3,6 +3,7 @@ import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUserPlus } from 'react-icons/fa';
 import axios from '../utils/axios';
+import '../styles/register.css';
 
 const Register = ({ setIsAuthenticated, setUserRole }) => {
   const [formData, setFormData] = useState({

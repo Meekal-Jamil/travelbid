@@ -68,8 +68,41 @@ const getAgentStats = async (req, res) => {
   }
 };
 
+// Get admin statistics
+const getAdminStats = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ msg: 'Not authorized' });
+    }
+
+    const totalUsers = await User.countDocuments();
+    const totalTrips = await Trip.countDocuments();
+    const pendingBids = await Bid.countDocuments({ status: 'pending' });
+    const acceptedBids = await Bid.countDocuments({ status: 'accepted' });
+
+    // Calculate total earnings from accepted bids
+    const acceptedBidsList = await Bid.find({ status: 'accepted' })
+      .populate('trip', 'budget');
+
+    const totalEarnings = acceptedBidsList.reduce((sum, bid) => {
+      return sum + (bid.trip.budget * 0.1); // 10% commission
+    }, 0);
+
+    res.json({
+      totalUsers,
+      totalTrips,
+      pendingBids,
+      acceptedBids,
+      totalEarnings
+    });
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllTrips,
-  getAgentStats
+  getAgentStats,
+  getAdminStats
 };

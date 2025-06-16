@@ -42,18 +42,20 @@ const TripCard = ({ trip, onViewDetails, onBookNow, userRole }) => {
           {getStatusBadge()}
         </div>
 
+        <hr/> 
+
         <div className="mb-3">
           <p className="mb-2">
-            <FaMapMarkerAlt className="me-2 text-primary" />
+            <FaMapMarkerAlt className="me-2 font-icons" />
             {trip.destination || 'No destination specified'}
           </p>
           <p className="mb-2">
-            <FaCalendarAlt className="me-2 text-primary" />
+            <FaCalendarAlt className="me-2 font-icons" />
             {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
           </p>
           <p className="mb-0">
-            <FaDollarSign className="me-2 text-primary" />
-            Budget: ${trip.budget || '0'}
+            <FaDollarSign className="me-2 font-icons" />
+            Budget: Rs. {trip.budget || '0'}
           </p>
         </div>
 
@@ -67,7 +69,9 @@ const TripCard = ({ trip, onViewDetails, onBookNow, userRole }) => {
           )}
         </Card.Text>
 
-        <div className="d-flex gap-2">
+        <hr/> 
+
+        <div className="d-flex mb-0 pb-0">
           <Button
             variant="outline-primary"
             className="flex-grow-1"

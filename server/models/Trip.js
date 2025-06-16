@@ -9,17 +9,6 @@ const bidSchema = new mongoose.Schema({
     enum: ['pending', 'accepted', 'rejected'],
     default: 'pending'
   },
-  paymentStatus: {
-    type: String,
-    enum: ['unpaid', 'paid'],
-    default: 'unpaid'
-  },
-  rating: {
-    type: Number,
-    min: 1,
-    max: 5,
-    default: null
-  },
   createdAt: { type: Date, default: Date.now }
 });
 

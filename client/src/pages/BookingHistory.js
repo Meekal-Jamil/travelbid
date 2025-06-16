@@ -94,9 +94,9 @@ const BookingHistory = () => {
                     {formatDate(bid.trip.startDate)} - {formatDate(bid.trip.endDate)}
                   </p>
                 </div>
-                <Badge bg={bid.paymentStatus === 'paid' ? 'success' : 'warning'}>
-                  {bid.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}
-                </Badge>
+                {bid.paymentStatus === 'paid' && (
+                  <Badge bg="success">Paid</Badge>
+                )}
               </div>
 
               <div className="mb-3">

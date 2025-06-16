@@ -2,6 +2,10 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 
 const cities = [
+   { country: 'Pakistan', cities: [
+    'Islamabad', 'Lahore', 'Karachi', 'Multan', 'Peshawar',
+    'Swat', 'Faisalabad', 'Sialkot', 'Quetta', 'Skardu'
+  ]},
   { country: 'United States', cities: [
     'New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix',
     'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'

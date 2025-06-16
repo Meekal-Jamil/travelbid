@@ -76,7 +76,7 @@ const SearchBar = ({ onSearch, initialValues = {} }) => {
               name="minBudget"
               value={filters.minBudget}
               onChange={handleChange}
-              placeholder="Min $"
+              placeholder="Min PKR"
             />
           </Form.Group>
         </Col>
@@ -88,7 +88,7 @@ const SearchBar = ({ onSearch, initialValues = {} }) => {
               name="maxBudget"
               value={filters.maxBudget}
               onChange={handleChange}
-              placeholder="Max $"
+              placeholder="Max PKR"
             />
           </Form.Group>
         </Col>

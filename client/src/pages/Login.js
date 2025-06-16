@@ -3,6 +3,7 @@ import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignInAlt } from 'react-icons/fa';
 import axios from '../utils/axios';
+import '../styles/login.css';
 
 const Login = ({ setIsAuthenticated, setUserRole }) => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,8 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
       // Store auth data
       localStorage.setItem('token', token);
       localStorage.setItem('userRole', role);
-      localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('userId', response.data._id);
+      // console.log(localStorage.getItem('userId'));
 
       // Update auth state
       setIsAuthenticated(true);

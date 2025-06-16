@@ -2,12 +2,35 @@ const Bid = require('../models/Bid');
 const Trip = require('../models/Trip');
 const User = require('../models/User');
 
+// Helper function to update agent stats
+const updateAgentStats = async (agentId, updates) => {
+  try {
+    const agent = await User.findById(agentId);
+    if (!agent) return;
+
+    // Initialize stats if they don't exist
+    if (!agent.stats) {
+      agent.stats = {
+        totalBids: 0,
+        acceptedBids: 0,
+        rejectedBids: 0,
+        pendingBids: 0,
+        totalEarnings: 0
+      };
+    }
+
+    // Apply updates
+    Object.assign(agent.stats, updates);
+    await agent.save();
+  } catch (err) {
+    console.error('Error updating agent stats:', err);
+  }
+};
+
 // Submit a bid (Agent)
 const submitBid = async (req, res) => {
   try {
     const { trip, price, services } = req.body;
-    
-    // Create the bid
     const newBid = await Bid.create({
       trip,
       agent: req.user._id,
@@ -15,22 +38,14 @@ const submitBid = async (req, res) => {
       services
     });
 
-    // Update agent statistics
-    const agentUpdate = await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        $inc: {
-          'stats.totalBids': 1,
-          'stats.pendingBids': 1
-        }
-      },
-      { new: true }
-    );
-    console.log('Updated agent stats after bid submission:', agentUpdate.stats);
+    // Update agent stats for new bid
+    await updateAgentStats(req.user._id, {
+      totalBids: (req.user.stats?.totalBids || 0) + 1,
+      pendingBids: (req.user.stats?.pendingBids || 0) + 1
+    });
 
     res.status(201).json(newBid);
   } catch (err) {
-    console.error('Error submitting bid:', err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -59,6 +74,8 @@ const acceptBid = async (req, res) => {
       return res.status(404).json({ msg: 'Bid not found' });
     }
 
+    console.log('Found trip:', trip._id);
+
     // Update the bid status to accepted
     const bid = trip.bids.id(bidId);
     if (!bid) {
@@ -66,44 +83,34 @@ const acceptBid = async (req, res) => {
       return res.status(404).json({ msg: 'Bid not found' });
     }
 
-    // Update bid status
     bid.status = 'accepted';
     trip.status = 'booked';
 
-    // Update agent statistics for accepted bid
-    const agentUpdate = await User.findByIdAndUpdate(
-      bid.agent,
-      {
-        $inc: {
-          'stats.acceptedBids': 1,
-          'stats.pendingBids': -1
-        }
-      },
-      { new: true }
-    );
-    console.log('Updated agent stats after bid acceptance:', agentUpdate.stats);
-
-    // Reject all other bids and update their agents' statistics
-    for (const otherBid of trip.bids) {
+    // Reject all other bids
+    trip.bids.forEach(otherBid => {
       if (otherBid._id.toString() !== bidId) {
         otherBid.status = 'rejected';
-        // Update statistics for rejected bids
-        await User.findByIdAndUpdate(
-          otherBid.agent,
-          {
-            $inc: {
-              'stats.rejectedBids': 1,
-              'stats.pendingBids': -1
-            }
-          },
-          { new: true }
-        );
       }
-    }
+    });
 
     await trip.save();
-    console.log('Bid accepted and trip updated:', trip._id);
 
+    // Update stats for accepted bid
+    await updateAgentStats(bid.agent, {
+      acceptedBids: (req.user.stats?.acceptedBids || 0) + 1,
+      pendingBids: (req.user.stats?.pendingBids || 0) - 1
+    });
+
+    // Update stats for rejected bids
+    const rejectedBids = trip.bids.filter(b => b.status === 'rejected');
+    for (const rejectedBid of rejectedBids) {
+      await updateAgentStats(rejectedBid.agent, {
+        rejectedBids: (req.user.stats?.rejectedBids || 0) + 1,
+        pendingBids: (req.user.stats?.pendingBids || 0) - 1
+      });
+    }
+
+    console.log('Bid accepted and trip updated:', trip._id);
     res.json({ msg: 'Bid accepted' });
   } catch (err) {
     console.error('Error accepting bid:', err);
@@ -114,39 +121,22 @@ const acceptBid = async (req, res) => {
 // Reject a bid (Traveler)
 const rejectBid = async (req, res) => {
   try {
-    const bidId = req.params.id;
-    
-    // Find the trip that contains this bid
-    const trip = await Trip.findOne({ 'bids._id': bidId });
-    if (!trip) {
-      return res.status(404).json({ msg: 'Bid not found' });
-    }
-
-    const bid = trip.bids.id(bidId);
+    const bid = await Bid.findById(req.params.id);
     if (!bid) {
       return res.status(404).json({ msg: 'Bid not found' });
     }
 
-    // Update bid status
     bid.status = 'rejected';
+    await bid.save();
 
-    // Update agent statistics
-    const agentUpdate = await User.findByIdAndUpdate(
-      bid.agent,
-      {
-        $inc: {
-          'stats.rejectedBids': 1,
-          'stats.pendingBids': -1
-        }
-      },
-      { new: true }
-    );
-    console.log('Updated agent stats after bid rejection:', agentUpdate.stats);
+    // Update agent stats for rejected bid
+    await updateAgentStats(bid.agent, {
+      rejectedBids: (req.user.stats?.rejectedBids || 0) + 1,
+      pendingBids: (req.user.stats?.pendingBids || 0) - 1
+    });
 
-    await trip.save();
     res.json({ msg: 'Bid rejected' });
   } catch (err) {
-    console.error('Error rejecting bid:', err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -154,38 +144,22 @@ const rejectBid = async (req, res) => {
 // Confirm payment for a bid (Traveler)
 const confirmPayment = async (req, res) => {
   try {
-    const bidId = req.params.id;
-    
-    // Find the trip that contains this bid
-    const trip = await Trip.findOne({ 'bids._id': bidId });
-    if (!trip) {
-      return res.status(404).json({ msg: 'Bid not found' });
-    }
-
-    const bid = trip.bids.id(bidId);
+    const bid = await Bid.findById(req.params.id);
     if (!bid) {
       return res.status(404).json({ msg: 'Bid not found' });
     }
 
-    // Update bid payment status
     bid.paymentStatus = 'paid';
+    await bid.save();
 
-    // Update agent statistics for payment
-    const agentUpdate = await User.findByIdAndUpdate(
-      bid.agent,
-      {
-        $inc: {
-          'stats.totalEarnings': bid.price
-        }
-      },
-      { new: true }
-    );
-    console.log('Updated agent earnings after payment:', agentUpdate.stats.totalEarnings);
+    // Update agent stats for payment
+    const commission = bid.price * 0.1; // 10% commission
+    await updateAgentStats(bid.agent, {
+      totalEarnings: (req.user.stats?.totalEarnings || 0) + commission
+    });
 
-    await trip.save();
     res.json({ msg: 'Payment confirmed and booking completed.' });
   } catch (err) {
-    console.error('Error confirming payment:', err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -194,38 +168,18 @@ const confirmPayment = async (req, res) => {
 const rateBid = async (req, res) => {
   try {
     const { rating } = req.body;
-    const bidId = req.params.id;
-    console.log('Rating bid:', bidId, 'with rating:', rating);
+    const bid = await Bid.findById(req.params.id);
 
-    // Find the trip that contains this bid
-    const trip = await Trip.findOne({ 'bids._id': bidId });
-    if (!trip) {
-      console.log('Trip not found for bid:', bidId);
-      return res.status(404).json({ msg: 'Bid not found' });
-    }
+    if (!bid) return res.status(404).json({ msg: 'Bid not found' });
 
-    const bid = trip.bids.id(bidId);
-    if (!bid) {
-      console.log('Bid not found in trip:', bidId);
-      return res.status(404).json({ msg: 'Bid not found' });
-    }
-
-    console.log('Current bid status:', bid.status);
-    console.log('Current payment status:', bid.paymentStatus);
-
-    if (bid.paymentStatus !== 'paid') {
-      console.log('Cannot rate unpaid booking');
+    if (bid.paymentStatus !== 'paid')
       return res.status(400).json({ msg: 'You can only rate paid bookings' });
-    }
 
-    // Update the rating
     bid.rating = rating;
-    await trip.save();
-    console.log('Rating updated successfully');
+    await bid.save();
 
     res.json({ msg: 'Rating submitted successfully' });
   } catch (err) {
-    console.error('Error submitting rating:', err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -262,10 +216,10 @@ const getTravelerBookings = async (req, res) => {
       if (trip.bids && trip.bids.length > 0) {
         trip.bids.forEach(bid => {
           console.log('Processing bid:', JSON.stringify(bid, null, 2));
-          // Only include accepted bids
-          if (bid.status === 'accepted') {
-            console.log('Found accepted bid:', JSON.stringify(bid, null, 2));
-            const bidData = {
+          // Include both accepted and paid bids
+          if (bid.status === 'accepted' || bid.paymentStatus === 'paid') {
+            console.log('Found accepted/paid bid:', JSON.stringify(bid, null, 2));
+            acceptedBids.push({
               _id: bid._id,
               trip: {
                 _id: trip._id,
@@ -278,26 +232,16 @@ const getTravelerBookings = async (req, res) => {
               price: bid.price,
               services: bid.services,
               status: bid.status,
-              paymentStatus: bid.paymentStatus || 'unpaid',
+              paymentStatus: bid.paymentStatus || 'pending',
               rating: bid.rating,
               createdAt: bid.createdAt
-            };
-            console.log('Created bid data with payment status:', bidData.paymentStatus);
-            acceptedBids.push(bidData);
+            });
           }
         });
       }
     });
 
-    // Sort bids by creation date, newest first
-    acceptedBids.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    console.log('Final accepted bids with payment statuses:', JSON.stringify(acceptedBids.map(bid => ({
-      id: bid._id,
-      status: bid.status,
-      paymentStatus: bid.paymentStatus
-    })), null, 2));
-
+    console.log('Final accepted bids:', JSON.stringify(acceptedBids, null, 2));
     res.json(acceptedBids);
   } catch (err) {
     console.error('Error in getTravelerBookings:', err);
