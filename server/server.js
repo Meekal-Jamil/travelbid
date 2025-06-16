@@ -33,6 +33,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/agent', agentRoutes);
 app.use('/api/payments', paymentRoutes);
 
+// Default route for root URL
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
