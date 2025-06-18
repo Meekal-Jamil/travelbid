@@ -17,7 +17,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // React app URL
+  origin: 'http://travelbid.vercel.app', // React app URL
   credentials: true
 }));
 
