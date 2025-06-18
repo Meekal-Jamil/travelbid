@@ -15,11 +15,13 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const app = express();
 
 // CORS configuration
-app.use(cors({
-  //origin: 'http://localhost:3000', // React app URL
-  origin: 'https://travelbid.vercel.app', // React app URL
+app.use(cors(
+  {
+  origin: 'http://localhost:3000', // React app URL
+  //origin: 'https://travelbid.vercel.app', // React app URL
   credentials: true
-}));
+})
+);
 
 // Middlewares
 app.use(express.json());
