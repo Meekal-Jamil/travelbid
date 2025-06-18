@@ -17,7 +17,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://travelbid.vercel.app', // React app URL
+  origin: 'https://travelbid.vercel.app', // React app URL
   credentials: true
 }));
 
